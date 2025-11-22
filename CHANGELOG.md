@@ -1,6 +1,14 @@
 # CHANGELOG
 
+## [1.1.1]
+
+### Added
+
+- Add visibility to `optional` macro
+
 ## [1.1.0]
+
+### Added
 
 - Add `optional` procedural macro with attribute for structs
 

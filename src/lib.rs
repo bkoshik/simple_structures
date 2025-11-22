@@ -3,7 +3,7 @@ mod helpers;
 use helpers::*;
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, DeriveInput, Ident, Type};
+use syn::{parse_macro_input, DeriveInput, Ident, Type, Visibility};
 
 #[proc_macro_derive(AutoGetters)]
 pub fn auto_getters(input: TokenStream) -> TokenStream {
@@ -36,6 +36,7 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
 pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input: DeriveInput = parse_macro_input!(item as DeriveInput);
     let name: Ident = input.ident;
+    let vis: &Visibility = &input.vis;
 
     let fields = get_fields(&input.data);
 
@@ -65,7 +66,7 @@ pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
     });
 
     let output: TokenStream = quote! {
-        struct #name {
+        #vis struct #name {
             #(#optional_fields),*
         }
     }.into();
