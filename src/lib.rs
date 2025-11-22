@@ -4,6 +4,7 @@ use helpers::*;
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput, Ident, Type, Visibility};
+use syn::token::Token;
 
 #[proc_macro_derive(AutoGetters)]
 pub fn auto_getters(input: TokenStream) -> TokenStream {
@@ -12,7 +13,7 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
 
     let fields = get_fields(&input.data);
 
-    let getters_methods = fields.iter().map(|f| {
+    let getters_methods: Vec<_> = fields.iter().map(|f| {
         let f_name: &Ident = f.ident.as_ref().unwrap();
         let f_type: &Type = &f.ty;
 
@@ -21,7 +22,7 @@ pub fn auto_getters(input: TokenStream) -> TokenStream {
                 &self.#f_name
             }
         }
-    });
+    }).collect();
 
     let output: TokenStream = quote! {
         impl #name {
@@ -40,7 +41,7 @@ pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
     let fields = get_fields(&input.data);
 
-    let optional_fields = fields.iter().map(|f| {
+    let optional_fields: Vec<_> = fields.iter().map(|f| {
         let f_name: &Ident = f.ident.as_ref().unwrap();
         let f_type: &Type = &f.ty;
         let f_vis: &Visibility = &f.vis;
@@ -64,7 +65,7 @@ pub fn optional(_attr: TokenStream, item: TokenStream) -> TokenStream {
                 #f_vis #f_name: Option<#f_type>
             }
         }
-    });
+    }).collect();
 
     let output: TokenStream = quote! {
         #vis struct #name {
