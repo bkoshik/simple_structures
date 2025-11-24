@@ -5,6 +5,7 @@
 ### Added
 
 - Add `#[derive(Builder)]` procedural macro
+- Add `tests` crate for testing how macros works in external crates
 
 ### Fixed
 
