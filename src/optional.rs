@@ -1,42 +1,52 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, Field, Fields, Ident, ItemStruct, Type, Visibility};
 use syn::__private::TokenStream2;
+use syn::{Field, Fields, Ident, ItemStruct, Type, Visibility, parse_macro_input};
 
 pub fn optional_impl(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input: ItemStruct = parse_macro_input!(item as ItemStruct);
 
     let name: Ident = input.ident;
     let vis: &Visibility = &input.vis;
-    let attrs: Vec<_> = input.attrs.iter().filter(|attr| !attr.path().is_ident("optional")).collect();
+    let attrs: Vec<_> = input
+        .attrs
+        .iter()
+        .filter(|attr| !attr.path().is_ident("optional"))
+        .collect();
     let output: TokenStream = match &input.fields {
         Fields::Named(fields) => {
-            let result: Vec<_> = fields.named.iter().map(|f| {
-                parse_field(&f)
-            }).collect();
+            let result: Vec<_> = fields.named.iter().map(|f| parse_field(&f)).collect();
 
             quote! {
                 #(#attrs)*
                 #vis struct #name {
                     #(#result),*
                 }
-            }.into()
+            }
+            .into()
         }
         Fields::Unnamed(fields) => {
-            let result: Vec<_> = fields.unnamed.iter().map(|f| {
-                let f_type: &Type = &f.ty;
+            let result: Vec<_> = fields
+                .unnamed
+                .iter()
+                .map(|f| {
+                    let f_type: &Type = &f.ty;
 
-                quote! {
-                    Option<#f_type>
-                }
-            }).collect();
+                    quote! {
+                        Option<#f_type>
+                    }
+                })
+                .collect();
 
             quote! {
                 #(#attrs)*
                 #vis struct #name(#(#result),*);
-            }.into()
+            }
+            .into()
         }
-        _ => unimplemented!("Optional can only be derived for structs with named and unnamed fields"),
+        _ => {
+            unimplemented!("Optional can only be derived for structs with named and unnamed fields")
+        }
     };
 
     output

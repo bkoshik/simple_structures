@@ -17,9 +17,9 @@
 //!     baz: String,
 //! }
 //! ```
-//! 
+//!
 //! will generate:
-//! 
+//!
 //! ```
 //! struct Foo {
 //!     bar: i16,
@@ -38,16 +38,16 @@
 //! ```
 
 mod auto_getters;
-mod optional;
 mod builder;
+mod optional;
 
-use proc_macro::TokenStream;
 use crate::auto_getters::auto_getters_impl;
 use crate::builder::builder_impl;
 use crate::optional::optional_impl;
+use proc_macro::TokenStream;
 
 /// Automatically generates ***getter methods*** only for **Named Structures**
-/// 
+///
 /// # Example
 ///
 /// ```

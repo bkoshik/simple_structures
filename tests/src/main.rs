@@ -1,6 +1,4 @@
-fn main() {
-
-}
+fn main() {}
 
 #[cfg(test)]
 mod tests {
@@ -32,15 +30,15 @@ mod tests {
             bar: String,
             baz: usize,
         }
-        
+
         let foo = Foo {
             bar: Some("Hello, world!".to_string()),
-            baz: Some(1984)
+            baz: Some(1984),
         };
-        
+
         assert_eq!(Some("Hello, world!".to_string()), foo.bar);
         assert_eq!(Some(1984), foo.baz);
-        
+
         Ok(())
     }
 
